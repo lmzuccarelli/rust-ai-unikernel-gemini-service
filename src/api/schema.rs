@@ -1,58 +1,89 @@
 use serde_derive::Deserialize;
 use serde_derive::Serialize;
-use serde_json::Value;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct ChatCompletionResponse {
-    pub id: String,
-    pub choices: Vec<Choice>,
-    pub created: i64,
-    pub model: String,
-    #[serde(rename = "system_fingerprint")]
-    pub system_fingerprint: String,
-    pub object: String,
-    pub usage: Usage,
+pub struct GeminiChatRequest {
+    //#[serde(rename = "system_instruction")]
+    //pub system_instruction: Option<SystemInstruction>,
+    pub contents: Vec<Content>,
+    //pub generation_config: Option<GenerationConfig>,
+}
+
+#[allow(unused)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SystemInstruction {
+    pub parts: Vec<Part>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Choice {
-    #[serde(rename = "finish_reason")]
+pub struct Part {
+    pub text: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Content {
+    pub role: String,
+    pub parts: Vec<Part>,
+}
+
+#[allow(unused)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GenerationConfig {
+    pub stop_sequences: Option<Vec<String>>,
+    pub temperature: Option<f64>,
+    pub top_p: Option<f64>,
+    pub top_k: Option<i64>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OpenAIChatRequest {
+    pub messages: Vec<OpenAIRequestMessage>,
+    pub model: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OpenAIRequestMessage {
+    pub role: String,
+    pub content: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GeminiChatResponse {
+    pub candidates: Vec<Candidate>,
+    pub usage_metadata: UsageMetadata,
+    pub model_version: String,
+    pub response_id: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Candidate {
+    pub content: Content,
     pub finish_reason: String,
     pub index: i64,
-    pub message: Message,
-    pub logprobs: Value,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Message {
-    pub content: String,
-    pub role: String,
-    #[serde(rename = "tool_calls")]
-    pub tool_calls: Value,
+pub struct UsageMetadata {
+    pub prompt_token_count: i64,
+    pub candidates_token_count: i64,
+    pub total_token_count: i64,
+    pub prompt_tokens_details: Vec<PromptTokensDetail>,
+    pub thoughts_token_count: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Usage {
-    #[serde(rename = "completion_tokens")]
-    pub completion_tokens: i64,
-    #[serde(rename = "prompt_tokens")]
-    pub prompt_tokens: i64,
-    #[serde(rename = "total_tokens")]
-    pub total_tokens: i64,
-    #[serde(rename = "avg_tok_per_sec")]
-    pub avg_tok_per_sec: f64,
-    #[serde(rename = "avg_prompt_tok_per_sec")]
-    pub avg_prompt_tok_per_sec: f64,
-    #[serde(rename = "avg_compl_tok_per_sec")]
-    pub avg_compl_tok_per_sec: f64,
-    #[serde(rename = "total_time_sec")]
-    pub total_time_sec: f64,
-    #[serde(rename = "total_prompt_time_sec")]
-    pub total_prompt_time_sec: f64,
-    #[serde(rename = "total_completion_time_sec")]
-    pub total_completion_time_sec: f64,
+pub struct PromptTokensDetail {
+    pub modality: String,
+    pub token_count: i64,
 }

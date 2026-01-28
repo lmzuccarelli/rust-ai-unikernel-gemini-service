@@ -2,7 +2,7 @@
 	"name": "unikernel-ai-gemini-service",
 	"description": "An ai unikernel gemini service written in Rust",
 	"log_level": "debug",
-	"api_key": "",
-	"base_url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent",
-	"server_port": 8084
+	"api_key_file": "/home/lzuccarelli/.gemini/api-key",
+	"base_url": "https://generativelanguage.googleapis.com/v1beta/models/{model_version}:generateContent",
+	"server_port": 8082
 }
